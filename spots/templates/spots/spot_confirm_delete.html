@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Potwierdź usunięcie{% endblock %}
+
+{% block content %}
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Czy na pewno chcesz usunąć "{{ spot.name }}"?</h4>
+        <p>Ta operacja jest nieodwracalna.</p>
+        <hr>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Usuń</button>
+            <a href="{% url 'spot_detail' pk=spot.pk %}" class="btn btn-secondary">Anuluj</a>
+        </form>
+    </div>
+{% endblock %}

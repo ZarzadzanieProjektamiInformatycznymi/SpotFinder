@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista Miejsc{% endblock %}
+
+{% block content %}
+    <h1>Interesujące miejsca</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">Wyszukaj miejsca</div>
+        <div class="card-body">
+            <form method="GET" class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    {{ form.query.label_tag }}
+                    {{ form.query }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.category.label_tag }}
+                    {{ form.category }}
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Szukaj</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if spots %}
+        <div class="list-group">
+            {% for spot in spots %}
+                <a href="{% url 'spot_detail' pk=spot.pk %}" class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ spot.name }}</h5>
+                        <small class="text-muted">Dodano: {{ spot.created_at|date:"d.m.Y" }}</small>
+                    </div>
+                    <p class="mb-1">{{ spot.description|truncatechars:150 }}</p>
+                    <small>Kategoria: {{ spot.category }}</small>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="alert alert-info">Brak miejsc do wyświetlenia.</p>
+    {% endif %}
+{% endblock %}
