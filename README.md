@@ -7,7 +7,6 @@ Poniższe instrukcje zakładają, że masz zainstalowany Python i pip na swoim s
 cd SpotFinder
 
 Utwórz i aktywuj wirtualne środowisko:
-
 code
 Bash
 download
