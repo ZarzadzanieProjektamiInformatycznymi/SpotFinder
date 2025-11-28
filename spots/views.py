@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import Spot, Category
-from .forms import SpotForm, SpotSearchForm
+from .models import Spot, Category, Rating
+from .forms import SpotForm, SpotSearchForm, RatingForm
 
 def spot_list(request):
     form = SpotSearchForm(request.GET)
@@ -25,7 +25,17 @@ def spot_list(request):
 
 def spot_detail(request, pk):
     spot = get_object_or_404(Spot, pk=pk)
-    return render(request, 'spots/spot_detail.html', {'spot': spot})
+
+    ratings = spot.ratings.all()
+    if ratings.exists():
+        avg_rating = sum(r.value for r in ratings) / ratings.count()
+    else:
+        avg_rating = None
+
+    return render(request, 'spots/spot_detail.html', {
+        'spot': spot,
+        'avg_rating': avg_rating,
+    })
 
 @login_required
 def spot_create(request):
@@ -67,3 +77,25 @@ def spot_delete(request, pk):
         spot.delete()
         return redirect('spot_list')
     return render(request, 'spots/spot_confirm_delete.html', {'spot': spot})
+
+@login_required
+def rate_spot(request, spot_id):
+    spot = get_object_or_404(Spot, id=spot_id)
+
+    try:
+        rating = Rating.objects.get(user=request.user, spot=spot)
+    except Rating.DoesNotExist:
+        rating = None
+
+    if request.method == "POST":
+        form = RatingForm(request.POST, instance=rating)
+        if form.is_valid():
+            new_rating = form.save(commit=False)
+            new_rating.user = request.user
+            new_rating.spot = spot
+            new_rating.save()
+            return redirect("spot_detail", pk=spot.id)
+    else:
+        form = RatingForm(instance=rating)
+
+    return render(request, "spots/rate_spot.html", {"spot": spot, "form": form})

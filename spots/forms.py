@@ -1,5 +1,5 @@
 from django import forms
-from .models import Spot, Category # Dodaj 'Category' tutaj!
+from .models import Spot, Category, Rating 
 
 class SpotForm(forms.ModelForm):
     class Meta:
@@ -18,3 +18,11 @@ class SpotSearchForm(forms.Form):
         # Ten wiersz staje się zbędny, jeśli queryset jest już ustawiony powyżej
         # self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].empty_label = "Wszystkie kategorie"
+
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ['value']
+        widgets = {
+            'value': forms.NumberInput(attrs={'min': 1, 'max': 5})
+        }

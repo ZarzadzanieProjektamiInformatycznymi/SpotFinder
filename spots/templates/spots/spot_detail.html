@@ -1,25 +1,57 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %}{{ spot.name }}{% endblock %} {%block content %}
+<div class="card">
+  <div class="card-body">
+    <h1 class="card-title">{{ spot.name }}</h1>
+    <h6 class="card-subtitle mb-2 text-muted">{{ spot.category }}</h6>
 
-{% block title %}{{ spot.name }}{% endblock %}
+    <p class="card-text">{{ spot.description }}</p>
 
-{% block content %}
-    <div class="card">
-        <div class="card-body">
-            <h1 class="card-title">{{ spot.name }}</h1>
-            <h6 class="card-subtitle mb-2 text-muted">{{ spot.category }}</h6>
-            <p class="card-text">{{ spot.description }}</p>
-            <p class="card-text"><small class="text-muted">Dodano przez: {{ spot.added_by.username }} w dniu {{ spot.created_at|date:"d.m.Y H:i" }}</small></p>
+    <p class="card-text">
+      <small class="text-muted">
+        Dodano przez: {{ spot.added_by.username }} w dniu {{
+        spot.created_at|date:"d.m.Y H:i" }}
+      </small>
+    </p>
 
-            {% if spot.location_lat and spot.location_lng %}
-                <p class="card-text"><small class="text-muted">Współrzędne: {{ spot.location_lat }}, {{ spot.location_lng }}</small></p>
-            {% endif %}
+    {% if spot.location_lat and spot.location_lng %}
+    <p class="card-text">
+      <small class="text-muted">
+        Współrzędne: {{ spot.location_lat }}, {{ spot.location_lng }}
+      </small>
+    </p>
+    {% endif %}
 
-            <hr>
-            {% if user.is_authenticated and user == spot.added_by %}
-                <a href="{% url 'spot_update' pk=spot.pk %}" class="btn btn-warning btn-sm me-2">Edytuj</a>
-                <a href="{% url 'spot_delete' pk=spot.pk %}" class="btn btn-danger btn-sm">Usuń</a>
-            {% endif %}
-            <a href="{% url 'spot_list' %}" class="btn btn-secondary btn-sm ms-2">Powrót do listy</a>
-        </div>
-    </div>
+    <hr />
+    <h5>Ocena użytkowników:</h5>
+
+    {% if avg_rating %}
+    <p>Średnia: <strong>{{ avg_rating|floatformat:1 }}</strong> / 5</p>
+    {% else %}
+    <p>Brak ocen.</p>
+    {% endif %} {% if user.is_authenticated %}
+    <a href="{% url 'rate_spot' spot.id %}" class="btn btn-primary btn-sm"
+      >Oceń to miejsce</a
+    >
+    {% else %}
+    <p><small>Zaloguj się, aby wystawić ocenę.</small></p>
+    {% endif %}
+
+    <hr />
+
+    {% if user.is_authenticated and user == spot.added_by %}
+    <a
+      href="{% url 'spot_update' pk=spot.pk %}"
+      class="btn btn-warning btn-sm me-2"
+      >Edytuj</a
+    >
+    <a href="{% url 'spot_delete' pk=spot.pk %}" class="btn btn-danger btn-sm"
+      >Usuń</a
+    >
+    {% endif %}
+
+    <a href="{% url 'spot_list' %}" class="btn btn-secondary btn-sm ms-2"
+      >Powrót do listy</a
+    >
+  </div>
+</div>
 {% endblock %}

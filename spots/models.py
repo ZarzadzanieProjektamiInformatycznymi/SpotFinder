@@ -34,3 +34,16 @@ class Spot(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ratings")
+    spot = models.ForeignKey(Spot, on_delete=models.CASCADE, related_name="ratings")
+    value = models.IntegerField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'spot')  # jeden użytkownik może ocenić miejsce tylko raz
+
+    def __str__(self):
+        return f"{self.user.username} → {self.spot.name}: {self.value}"
