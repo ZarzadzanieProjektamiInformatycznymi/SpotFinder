@@ -1,5 +1,5 @@
 from django import forms
-from .models import Spot, Category, Rating 
+from .models import Spot, Category, Rating, Comment 
 
 class SpotForm(forms.ModelForm):
     class Meta:
@@ -25,4 +25,15 @@ class RatingForm(forms.ModelForm):
         fields = ['value']
         widgets = {
             'value': forms.NumberInput(attrs={'min': 1, 'max': 5})
+        }
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
+        widgets = {
+            'text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Napisz komentarz...'
+            })
         }

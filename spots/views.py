@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import Spot, Category, Rating
-from .forms import SpotForm, SpotSearchForm, RatingForm
+from .models import Spot, Category, Rating, Comment
+from .forms import SpotForm, SpotSearchForm, RatingForm, CommentForm
+from django.core.paginator import Paginator
 
 def spot_list(request):
     form = SpotSearchForm(request.GET)
@@ -26,16 +27,46 @@ def spot_list(request):
 def spot_detail(request, pk):
     spot = get_object_or_404(Spot, pk=pk)
 
+    # --- Oceny ---
     ratings = spot.ratings.all()
-    if ratings.exists():
-        avg_rating = sum(r.value for r in ratings) / ratings.count()
-    else:
-        avg_rating = None
+    avg_rating = sum(r.value for r in ratings) / ratings.count() if ratings else None
 
-    return render(request, 'spots/spot_detail.html', {
-        'spot': spot,
-        'avg_rating': avg_rating,
-    })
+   # --- Komentarze — rosnąca lista ---
+    show = request.GET.get("show", 3)
+    try:
+        show = int(show)
+    except ValueError:
+        show = 3
+
+    all_comments = spot.comments.all()
+    comments = all_comments[:show]
+
+    has_more = len(all_comments) > show
+
+
+    # --- Dodawanie komentarza ---
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return redirect("login")
+
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.spot = spot
+            new_comment.user = request.user
+            new_comment.save()
+            return redirect("spot_detail", pk=spot.pk)
+    else:
+        form = CommentForm()
+
+    return render(request, "spots/spot_detail.html", {
+    "spot": spot,
+    "avg_rating": avg_rating,
+    "comments": comments,
+    "form": form,
+    "show": show,
+    "has_more": has_more,
+})
 
 @login_required
 def spot_create(request):

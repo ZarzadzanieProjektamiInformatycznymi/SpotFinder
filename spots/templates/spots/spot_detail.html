@@ -37,6 +37,79 @@
     {% endif %}
 
     <hr />
+    <!-- Nagłówek + przycisk dodawania komentarza -->
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+        <h4 class="mb-0">Komentarze</h4>
+
+        {% if user.is_authenticated %}
+            <button id="showCommentFormBtn" class="btn btn-primary btn-sm">
+                Dodaj komentarz
+            </button>
+        {% endif %}
+    </div>
+
+    <!-- Lista komentarzy -->
+    <div class="mt-3">
+        {% for c in comments %}
+            <div class="border rounded p-2 mb-2">
+                <strong>{{ c.user.username }}</strong>
+                <small class="text-muted ms-2">
+                    {{ c.created_at|date:"d.m.Y H:i" }}
+                </small>
+
+                <p class="mb-0 mt-1">{{ c.text }}</p>
+            </div>
+        {% empty %}
+            <p>Brak komentarzy.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Wyświetl więcej -->
+    {% if has_more %}
+      <div class="mt-3 text-center">
+          <a href="?show={{ show|add:5 }}" class="btn btn-outline-secondary btn-sm">
+              Wyświetl więcej
+          </a>
+      </div>
+  {% endif %}
+
+  {% if show|add:0 > 3 %}
+      <div class="mt-2 text-center">
+          <a href="?show=3" class="btn btn-outline-danger btn-sm">
+              Zwiń komentarze
+          </a>
+      </div>
+  {% endif %}
+
+
+
+    <hr>
+
+    <!-- Ukryty formularz dodawania komentarza -->
+    {% if user.is_authenticated %}
+    <div id="commentFormWrapper" class="mt-3" style="display: none;">
+        <form method="post">
+            {% csrf_token %}
+            <textarea name="text" class="form-control mb-2"
+                      rows="3" placeholder="Napisz komentarz..."></textarea>
+            <button type="submit" class="btn btn-success btn-sm">Dodaj komentarz</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <script>
+        const btn = document.getElementById("showCommentFormBtn");
+        const wrapper = document.getElementById("commentFormWrapper");
+
+        if (btn) {
+            btn.addEventListener("click", () => {
+                wrapper.style.display = "block";
+                btn.style.display = "none";
+            });
+        }
+    </script>
+
+
 
     {% if user.is_authenticated and user == spot.added_by %}
     <a
@@ -48,7 +121,7 @@
       >Usuń</a
     >
     {% endif %}
-
+    <br>
     <a href="{% url 'spot_list' %}" class="btn btn-secondary btn-sm ms-2"
       >Powrót do listy</a
     >
