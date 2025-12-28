@@ -4,6 +4,8 @@ from django.db.models import Q
 from .models import Spot, Category, Rating, Comment
 from .forms import SpotForm, SpotSearchForm, RatingForm, CommentForm
 from django.core.paginator import Paginator
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 
 def spot_list(request):
     form = SpotSearchForm(request.GET)
@@ -67,6 +69,18 @@ def spot_detail(request, pk):
     "show": show,
     "has_more": has_more,
 })
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Konto stworzone dla {username}! Możesz się teraz zalogować.')
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
 
 @login_required
 def spot_create(request):

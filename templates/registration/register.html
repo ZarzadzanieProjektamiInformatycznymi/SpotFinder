@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Zarejestruj się w SpotFinder</h2>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Stwórz konto</button>
+  </form>
+  <div class="mt-3">
+    <small>Masz już konto? <a href="{% url 'login' %}">Zaloguj się</a></small>
+  </div>
+{% endblock %}
