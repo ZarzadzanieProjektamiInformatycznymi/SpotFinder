@@ -6,6 +6,7 @@ from .forms import SpotForm, SpotSearchForm, RatingForm, CommentForm
 from django.core.paginator import Paginator
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.contrib.auth import login
 
 def spot_list(request):
     form = SpotSearchForm(request.GET)
@@ -74,10 +75,11 @@ def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()  
+            login(request, user) 
             username = form.cleaned_data.get('username')
-            messages.success(request, f'Konto stworzone dla {username}! Możesz się teraz zalogować.')
-            return redirect('login')
+            messages.success(request, f'Witaj {username}! Konto zostało utworzone.')
+            return redirect('spot_list')  
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
