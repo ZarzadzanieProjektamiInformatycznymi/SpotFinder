@@ -13,11 +13,13 @@
     </p>
 
     {% if spot.location_lat and spot.location_lng %}
-    <p class="card-text">
-      <small class="text-muted">
-        Współrzędne: {{ spot.location_lat }}, {{ spot.location_lng }}
-      </small>
-    </p>
+    <div class="mb-4">
+        <a href="https://www.google.com/maps/search/?api=1&query={{ spot.location_lat|stringformat:'f' }},{{ spot.location_lng|stringformat:'f' }}" 
+           target="_blank" 
+           class="btn btn-outline-dark btn-sm">
+           📍 Zobacz na mapie
+        </a>
+    </div>
     {% endif %}
 
     <hr />
@@ -28,26 +30,22 @@
     {% else %}
     <p>Brak ocen.</p>
     {% endif %} {% if user.is_authenticated %}
-    <a href="{% url 'rate_spot' spot.id %}" class="btn btn-primary btn-sm"
-      >Oceń to miejsce</a
-    >
+    <a href="{% url 'rate_spot' spot.id %}" class="btn btn-outline-dark btn-sm">Oceń to miejsce</a>
     {% else %}
     <p><small>Zaloguj się, aby wystawić ocenę.</small></p>
     {% endif %}
 
     <hr />
-    <!-- Nagłówek + przycisk dodawania komentarza -->
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
-        <h4 class="mb-0">Komentarze</h4>
+    <div class="d-flex align-items-center mt-4 mb-3">
+        <h4 class="mb-0 me-3">Komentarze</h4>
 
         {% if user.is_authenticated %}
-            <button id="showCommentFormBtn" class="btn btn-primary btn-sm">
+            <button id="showCommentFormBtn" class="btn btn-dark btn-sm">
                 Dodaj komentarz
             </button>
         {% endif %}
     </div>
 
-    <!-- Lista komentarzy -->
     <div class="mt-3">
         {% for c in comments %}
             <div class="border rounded p-2 mb-2">
@@ -63,7 +61,6 @@
         {% endfor %}
     </div>
 
-    <!-- Wyświetl więcej -->
     {% if has_more %}
       <div class="mt-3 text-center">
           <a href="?show={{ show|add:5 }}" class="btn btn-outline-secondary btn-sm">
@@ -80,11 +77,8 @@
       </div>
   {% endif %}
 
-
-
     <hr>
 
-    <!-- Ukryty formularz dodawania komentarza -->
     {% if user.is_authenticated %}
     <div id="commentFormWrapper" class="mt-3" style="display: none;">
         <form method="post">
@@ -108,22 +102,22 @@
         }
     </script>
 
+    <div class="mt-5 pt-3 border-top d-flex justify-content-between align-items-center">
+        <a href="{% url 'spot_list' %}" class="btn btn-light border text-muted">
+            ← Wróć
+        </a>
 
-
-    {% if user.is_authenticated and user == spot.added_by %}
-    <a
-      href="{% url 'spot_update' pk=spot.pk %}"
-      class="btn btn-warning btn-sm me-2"
-      >Edytuj</a
-    >
-    <a href="{% url 'spot_delete' pk=spot.pk %}" class="btn btn-danger btn-sm"
-      >Usuń</a
-    >
-    {% endif %}
-    <br>
-    <a href="{% url 'spot_list' %}" class="btn btn-secondary btn-sm ms-2"
-      >Powrót do listy</a
-    >
+        {% if user.is_authenticated and user == spot.added_by %}
+        <div>
+            <a href="{% url 'spot_update' pk=spot.pk %}" class="btn btn-outline-dark btn-sm me-1">
+                Edytuj
+            </a>
+            <a href="{% url 'spot_delete' pk=spot.pk %}" class="btn btn-outline-danger btn-sm">
+                Usuń
+            </a>
+        </div>
+        {% endif %}
+    </div>
   </div>
 </div>
 {% endblock %}

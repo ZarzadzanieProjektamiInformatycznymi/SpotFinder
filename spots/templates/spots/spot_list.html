@@ -8,19 +8,21 @@
     <div class="card mb-4">
         <div class="card-header">Wyszukaj miejsca</div>
         <div class="card-body">
-            <form method="GET" class="row g-3 align-items-end">
-                <div class="col-md-6">
-                    {{ form.query.label_tag }}
-                    {{ form.query }}
-                </div>
-                <div class="col-md-4">
-                    {{ form.category.label_tag }}
-                    {{ form.category }}
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Szukaj</button>
-                </div>
-            </form>
+            <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-5">
+            <label class="fw-bold small">Wyszukaj:</label>
+            {{ form.query }}
+        </div>
+        
+        <div class="col-md-5">
+            <label class="fw-bold small">Kategoria:</label>
+            {{ form.category }}
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-dark w-100">Szukaj</button>
+        </div>
+    </form>
         </div>
     </div>
 
@@ -40,4 +42,11 @@
     {% else %}
         <p class="alert alert-info">Brak miejsc do wyświetlenia.</p>
     {% endif %}
+    <script>
+    var inputs = document.querySelectorAll('input[type="text"], select');
+    inputs.forEach(function(input) {
+        input.classList.add('form-control', 'bg-light', 'border-0');
+        if(input.tagName === 'SELECT') input.classList.add('form-select');
+    });
+</script>
 {% endblock %}

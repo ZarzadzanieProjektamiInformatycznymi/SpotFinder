@@ -8,17 +8,28 @@
         {% csrf_token %}
         {% for field in form %}
             <div class="mb-3">
-                {{ field.label_tag }}
+                <label class="form-label fw-bold d-block">{{ field.label }}</label>
                 {{ field }}
-                {% if field.help_text %}
-                    <div class="form-text">{{ field.help_text }}</div>
-                {% endif %}
                 {% for error in field.errors %}
-                    <div class="alert alert-danger">{{ error }}</div>
+                    <div class="text-danger small mt-1">⚠️ {{ error }}</div>
                 {% endfor %}
             </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary">Zapisz</button>
-        <a href="{% url 'spot_list' %}" class="btn btn-secondary">Anuluj</a>
+        <div class="mt-4 pt-3 border-top">
+            <button type="submit" class="btn btn-dark px-4">Zapisz</button>
+            <a href="javascript:history.back()" class="btn btn-outline-secondary px-4 ms-2">Anuluj</a>
+        </div>
     </form>
+    <script>
+    var inputs = document.querySelectorAll('input, textarea, select');
+    inputs.forEach(function(input) {
+        if(input.type !== 'checkbox' && input.type !== 'hidden') {
+            input.classList.add('form-control', 'bg-light', 'border-0');
+            input.style.padding = "10px";
+        }
+        if(input.tagName === 'SELECT') {
+            input.classList.add('form-select');
+        }
+    });
+</script>
 {% endblock %}

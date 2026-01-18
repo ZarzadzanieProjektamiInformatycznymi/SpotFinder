@@ -26,8 +26,8 @@ class Spot(models.Model):
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='spots')
     image = models.ImageField(upload_to='spots_images/', blank=True, null=True, verbose_name="Zdjęcie")
-    location_lat = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True) # Szerokość geograficzna
-    location_lng = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True) # Długość geograficzna
+    location_lat = models.DecimalField(max_digits=20, decimal_places=15, blank=True, null=True) # Szerokość geograficzna
+    location_lng = models.DecimalField(max_digits=20, decimal_places=15, blank=True, null=True) # Długość geograficzna
     added_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='added_spots')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

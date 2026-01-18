@@ -7,6 +7,8 @@ class SpotForm(forms.ModelForm):
         fields = ['name', 'description', 'category', 'location_lat', 'location_lng']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
+            'location_lat': forms.NumberInput(attrs={'step': 'any'}),
+            'location_lng': forms.NumberInput(attrs={'step': 'any'})
         }
 
 class SpotSearchForm(forms.Form):
